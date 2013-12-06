@@ -48,7 +48,7 @@ class PhappView
 	/**
 	 * Constructor
 	 *
-	 * @parent $parent - parent object
+	 * @parent $app - application object
 	 */
 	public function __construct( $app = null )
 	{
