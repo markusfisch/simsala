@@ -59,6 +59,8 @@ Start creating files and folders as you like.
 At any time, you may press __Publish__ to generate the HTML files in
 the directory that contains simsala.
 
+Here's a [sample repository][3] to get you going.
+
 It's probably a good idea to restrict access to the simsala directory.
 If you're using Apache, you might want to use [.htaccess authorization][2]
 for that.
@@ -76,3 +78,4 @@ That way you can always update simsala to the latest version with:
 
 [1]:https://en.wikipedia.org/wiki/Markdown
 [2]:http://google.com/search?hl=en&q=htaccess%20authentication
+[3]:https://github.com/markusfisch/simsala-sample
