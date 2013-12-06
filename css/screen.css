@@ -1,0 +1,200 @@
+html
+{
+	background: #f0f0f0;
+	height: 100%;
+}
+
+body
+{
+	margin: 0 auto; padding: 0;
+	max-width: 50em;
+	height: 100%;
+	font: 11pt sans-serif; color: #555;
+}
+
+form
+{
+	margin: 0; padding: 0;
+	width: 100%; height: 100%;
+}
+
+.Path
+{
+	overflow: hidden;
+	margin-bottom: 1px;
+}
+
+.Screenreader
+{
+	display: none;
+}
+
+.Path *
+{
+	float: left;
+	margin: 0 .5em 0 0; padding: 1em;
+	text-decoration: none;
+	background: #e8e8e8; color: #555;
+	position: relative;
+}
+
+.Path *:not(:last-child):after
+{
+	content: " ";
+	position: absolute;
+	top: 50%; left: 100%;
+	width: 0; height: 0;
+	margin-top: -.5em;
+	border-top: .5em solid transparent;
+	border-bottom: .5em solid transparent;
+	border-left: .5em solid #e8e8e8;
+}
+
+.Directory
+{
+	margin: 0; padding: 0;
+	list-style: none;
+}
+
+.Directory li
+{
+	position: relative;
+	margin: 0 0 1px; padding: 0;
+	background: #e8e8e8;
+}
+
+.Directory .Hidden .File
+{
+	color: #aaa;
+}
+
+.Directory a
+{
+	text-decoration: none;
+	color: #555;
+}
+
+.Directory a.File
+{
+	display: block;
+}
+
+.Directory input.File
+{
+	width: 100%;
+}
+
+.Directory .File
+{
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 1em;
+}
+
+.Directory .Manage
+{
+	position: absolute;
+	right: 0; top: 0;
+	background: #e8e8e8;
+	border-left: 1px solid #f0f0f0;
+}
+
+.Directory .SelectedFile
+{
+	-moz-box-shadow: 0 0 .5em 0 #ccc;
+	-webkit-box-shadow: 0 0 .5em 0 #ccc;
+	box-shadow: 0 0 .5em 0 #ccc;
+	z-index: 2;
+}
+
+.Directory .SelectedFile .File
+{
+	border: 0;
+	border-radius: 0;
+	margin: 0; padding: 1em;
+	background: #fff;
+	font: 100% sans-serif; color: #555;
+	outline: 0;
+	-webkit-appearance: none;
+}
+
+.Directory .Actions
+{
+	display: block;
+	margin: 0; padding: 0;
+	background: #f8f8f8;
+	width: 100%;
+	list-style: none;
+	overflow: hidden;
+}
+
+.Directory .Actions li
+{
+	float: right;
+	margin: 0; padding: 0;
+	border: 0;
+}
+
+.Directory .Action
+{
+	display: block;
+	background: #f8f8f8;
+}
+
+.Controls
+{
+	overflow: hidden;
+}
+
+.Controls *
+{
+	float: left;
+	background: #f0f0f0;
+}
+
+.Directory input.Action,
+.Controls input
+{
+	margin: 0; padding: 1em 1em .8em;
+	border: 0;
+	border-radius: 0;
+	outline: 0;
+	-webkit-appearance: none;
+	cursor: pointer;
+}
+
+.Directory .Manage,
+.Directory .Action,
+.Controls *
+{
+	padding: 1em;
+	text-decoration: none;
+	font: 100% sans-serif; color: #777;
+}
+
+.Editor
+{
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	margin: 0; padding: 1em;
+	width: 100%;
+	/* this is for browser that don't support calc(); just try
+	 * to keep a bit of the controls visible */
+	height: 95%;
+	height: -webkit-calc( 100% - 3em );
+	height: -o-calc( 100% - 3em );
+	height: calc( 100% - 3em );
+	background: #fff; color: #333;
+	border: 0;
+	border-radius: 0;
+	font-family: monospace;
+	font-size: 110%;
+	line-height: 150%;
+	outline: 0;
+	-webkit-appearance: none;
+	-moz-box-shadow: 0 0 .5em 0 #ccc;
+	-webkit-box-shadow: 0 0 .5em 0 #ccc;
+	box-shadow: 0 0 .5em 0 #ccc;
+}

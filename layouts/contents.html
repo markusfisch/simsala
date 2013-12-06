@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title><?= $title ?></title>
+<link rel="stylesheet" type="text/css" href="css/screen.css"/>
+</head>
+<body>
+<a name="Top"></a>
+<header><div class="Header">
+<a href="index.html" class="Domain">Demo</a>
+<a href="#Menu" class="ToMenu">Show Menu</a>
+</div></header>
+<article><div class="Article">
+<?= $content ?>
+</div></article>
+<div class="Menu">
+<h2>Menu</h2>
+<a href="#Top" class="ToTop">Top of the page</a>
+<a name="Menu"></a>
+<nav>
+<?= $this->nav() ?>
+</nav>
+</div>
+</body>
+</html>
