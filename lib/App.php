@@ -23,9 +23,9 @@ class App extends Phapp
 	}
 
 	/**
-	 * Generate content
+	 * Generate page contents
 	 */
-	public function content()
+	public function contents()
 	{
 		return $this->process( 'EditorView' );
 	}
