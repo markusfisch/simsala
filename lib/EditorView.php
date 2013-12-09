@@ -115,20 +115,21 @@ EOF;
 
 		if( is_file( $this->edit ) )
 			$actions .= <<<EOF
-<a href="#Rename">Rename</a>
-<a href="?cwd={$this->cwd}#Name">New</a>\n
+<a href="#Rename">{$this->tr( 'Rename' )}</a>
+<a href="?cwd={$this->cwd}#Name">{$this->tr( 'New' )}</a>\n
 EOF;
 
 		if( !is_dir( $this->edit ) )
 			$editor = <<<EOF
 <div class="Controls">
-<input type="submit" name="save" value="Save"/>
-<input type="submit" name="publish" value="Publish"/>
-<a href="#Path">Path</a>
+<input type="submit" name="save" value="{$this->tr( 'Save' )}"/>
+<input type="submit" name="publish" value="{$this->tr( 'Publish' )}"/>
+<a href="#Path">{$this->tr( 'Path' )}</a>
 {$actions}</div>
 <a name="Edit"></a>
-<textarea class="Editor" name="text" rows="10"
-placeholder="Enter text here">{$this->fm->getFile( $this->edit )}</textarea>\n
+<textarea name="text" rows="10"
+placeholder="{$this->tr( 'Enter text here' )}"
+class="Editor">{$this->fm->getFile( $this->edit )}</textarea>\n
 EOF;
 		else
 			$editor = $actions;
@@ -155,7 +156,7 @@ EOF;
 		foreach( explode( '/', trim( $dir, '/' ) ) as $name )
 		{
 			if( $name == $this->app->simsala->contentsDir )
-				$label = 'Home';
+				$label = $this->tr( 'Home' );
 			else
 				$label = $name;
 
@@ -240,10 +241,13 @@ EOF;
 		if( !$selected )
 			$out .= <<<EOF
 <li class="SelectedFile"><a name="Name"></a>
-<input type="text" class="File" name="name" placeholder="Enter name"/>
+<input type="text" class="File" name="name"
+placeholder="{$this->tr( 'Enter name' )}"/>
 <ul class="Actions">
-<li><input type="submit" class="Action" name="mkdir" value="mkdir"/></li>
-<li><input type="submit" class="Action" name="save" value="Save"/></li>
+<li><input type="submit" class="Action" name="mkdir"
+value="{$this->tr( 'mkdir' )}"/></li>
+<li><input type="submit" class="Action" name="save"
+value="{$this->tr( 'Save' )}"/></li>
 </ul></li>\n
 EOF;
 
@@ -283,31 +287,38 @@ EOF;
 <li class="{$classes}"><a name="Rename"></a>
 <input type="text" class="File" name="name" value="{$name}"/>
 <ul class="Actions">
-<li><input type="submit" class="Action" name="save" value="Save"/></li>
-<li><a href="?up=${file}&amp;time=${time}#Rename" class="Action">Up</a></li>
-<li><a href="?down=${file}&amp;time=${time}#Rename" class="Action">Down</a></li>\n
+<li><input type="submit" class="Action" name="save"
+value="{$this->tr( 'Save' )}"/></li>
+<li><a href="?up=${file}&amp;time=${time}#Rename"
+class="Action">{$this->tr( 'Up' )}</a></li>
+<li><a href="?down=${file}&amp;time=${time}#Rename"
+class="Action">{$this->tr( 'Down' )}</a></li>\n
 EOF;
 
 			if( $hidden )
 				$out .= <<<EOF
-<li><a href="?show={$file}#Rename" class="Action">Show</a></li>\n
+<li><a href="?show={$file}#Rename"
+class="Action">{$this->tr( 'Show' )}</a></li>\n
 EOF;
 			else
 				$out .= <<<EOF
-<li><a href="?hide={$file}#Rename" class="Action">Hide</a></li>\n
+<li><a href="?hide={$file}#Rename"
+class="Action">{$this->tr( 'Hide' )}</a></li>\n
 EOF;
 
 			if( is_file( $file ) )
 				$out .= <<<EOF
-<li><a href="#Edit" class="Action">Edit</a></li>\n
+<li><a href="#Edit" class="Action">{$this->tr( 'Edit' )}</a></li>\n
 EOF;
 			else if( is_dir( $file ) )
 				$out .= <<<EOF
-<li><a href="?cwd={$file}" class="Action">Enter</a></li>\n
+<li><a href="?cwd={$file}" class="Action">{$this->tr( 'Enter' )}</a></li>\n
 EOF;
 
 			$out .= <<<EOF
-<li><a href="?remove={$file}" class="Action">Delete</a></li>
+<li><a href="?remove={$file}"
+onclick="return confirm( '{$this->tr( 'Are you sure?' )}' )"
+class="Action">{$this->tr( 'Delete' )}</a></li>
 </ul></li>\n
 EOF;
 		}
@@ -334,11 +345,23 @@ EOF;
 
 			$out .= <<<EOF
 <li{$classes}><a class="File" href="?{$action}={$file}{$anchor}">{$name}</a>
-<a class="Manage" href="?edit={$file}#Rename">Manage</a></li>\n
+<a href="?edit={$file}#Rename"
+class="Manage">{$this->tr( 'Manage' )}</a></li>\n
 EOF;
 		}
 
 		return $out;
+	}
+
+	/**
+	 * Translate a label
+	 *
+	 * @param $en - english label to translate
+	 */
+	protected function tr( $en )
+	{
+		// overwrite this method to implement i18n
+		return $en;
 	}
 
 	/**
