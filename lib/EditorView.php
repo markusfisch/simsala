@@ -178,7 +178,7 @@ EOF;
 			$path .= $name;
 
 			$contents .= <<<EOF
-<a href="$path">$name</a><span class="Screenreader">/</span>\n
+<a href="$path">$label</a><span class="Screenreader">/</span>\n
 EOF;
 
 			$path .= '/';
