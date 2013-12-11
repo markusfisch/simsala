@@ -19,11 +19,11 @@ class FileManager
 	}
 
 	/**
-	 * Return safe path
+	 * Return local path and file
 	 *
 	 * @param $file - path and file name
 	 */
-	public function safePath( $file )
+	public function local( $file )
 	{
 		if( strncmp( $file, $this->root, strlen( $this->root ) ) ||
 			strpos( $file, '..' ) > -1 )
@@ -37,9 +37,9 @@ class FileManager
 	 *
 	 * @param $file - path and file name
 	 */
-	public function getFile( $file )
+	public function read( $file )
 	{
-		if( !($file = $this->safePath( $file )) ||
+		if( !($file = $this->local( $file )) ||
 			!is_file( $file ) )
 			return null;
 
@@ -52,10 +52,10 @@ class FileManager
 	 * @param $file - path and file name or just the target directory
 	 * @param $text - contents to put into file
 	 */
-	public function putFile( $file, $text )
+	public function write( $file, $text )
 	{
 		return
-			($file = $this->safePath( $file )) &&
+			($file = $this->local( $file )) &&
 			file_put_contents( $file, $text ) !== false;
 	}
 
@@ -67,7 +67,7 @@ class FileManager
 	public function makeDirectory( $path )
 	{
 		return
-			($path = $this->safePath( $path )) &&
+			($path = $this->local( $path )) &&
 			mkdir( $path ) !== false;
 	}
 
@@ -79,8 +79,8 @@ class FileManager
 	 */
 	public function move( $old, $new )
 	{
-		if( !($old = $this->safePath( $old )) ||
-			!($new = $this->safePath( $new )) )
+		if( !($old = $this->local( $old )) ||
+			!($new = $this->local( $new )) )
 			return false;
 
 		return rename( $old, $new );
@@ -93,7 +93,7 @@ class FileManager
 	 */
 	public function remove( $file )
 	{
-		if( !($file = $this->safePath( $file )) )
+		if( !($file = $this->local( $file )) )
 			return false;
 
 		if( is_dir( $file ) )
@@ -112,7 +112,8 @@ class FileManager
 	 */
 	public function removeDirectory( $dir )
 	{
-		if( !($dh = opendir( $dir )) )
+		if( !($dir = $this->local( $dir )) ||
+			!($dh = opendir( $dir )) )
 			return false;
 
 		while( ($name = readdir( $dh )) )

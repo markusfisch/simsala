@@ -3,7 +3,7 @@
 /**
  * Editor view
  */
-class EditorView extends PhappView
+class EditorView extends BaseView
 {
 	/** File manager */
 	protected $fm;
@@ -11,7 +11,7 @@ class EditorView extends PhappView
 	/** File or directory to edit */
 	protected $edit;
 
-	/** Current working directory (optional) */
+	/** Current working directory if no file or directory to edit was set */
 	protected $cwd;
 
 	/**
@@ -19,28 +19,36 @@ class EditorView extends PhappView
 	 */
 	public function request()
 	{
+		if( ($view = parent::request()) )
+			return $view;
+
 		$this->fm = new FileManager(
 			$this->app->simsala->contentsDir );
 
-		$edit = $this->fm->safePath( $_REQUEST['edit'] );
-		$cwd = $this->fm->safePath( $_REQUEST['cwd'] );
+		if( ($edit = $_REQUEST['edit']) )
+			$edit = $this->fm->local( $edit );
+		else if( ($cwd = $_REQUEST['cwd']) );
+			$cwd = $this->fm->local( $cwd );
 
 		if( ($name = $_REQUEST['name']) &&
-			($name = $this->fileName( basename( $name ) )) )
+			($name = str_replace( ' ', '-', basename( $name ) )) )
 		{
 			if( $_REQUEST['mkdir'] )
 			{
-				$edit = "$cwd/$name";
+				$path = "$cwd/$name";
 
-				if( $this->fm->makeDirectory( $edit ) )
-					NavigationFile::add( $edit );
+				if( $this->fm->makeDirectory( $path ) )
+				{
+					NavigationFile::add( $path );
+					$edit = $path;
+				}
 			}
 			else if( $_REQUEST['save'] ||
 				($publish = $_REQUEST['publish']) )
 			{
-				$newName = $this->fm->safePath(
-					($edit ?  dirname( $edit ) : $cwd) .
-					"/$name" );
+				$newName =
+					($edit ? dirname( $edit ) : $cwd) .
+					"/$name";
 
 				if( is_dir( $edit ) )
 				{
@@ -62,28 +70,35 @@ class EditorView extends PhappView
 				}
 			}
 		}
-		else if( ($file = $this->fm->safePath( $_REQUEST['remove'] )) )
+		else if( ($file = $this->fm->local( $_REQUEST['remove'] )) )
 		{
 			if( $this->fm->remove( $file ) )
 				NavigationFile::remove( $file );
 
+			$edit = null;
 			$cwd = dirname( $file );
 		}
 		else if(
 			($file = $_REQUEST['up']) ||
 			($file = $_REQUEST['down']) )
 		{
+			$file = $this->fm->local( $file );
+
 			NavigationFile::move(
-				($edit = $this->fm->safePath( $file )),
+				$file,
 				$_REQUEST['up'] ? true : false );
+
+			$edit = $file;
 		}
-		else if( ($file = $this->fm->safePath( $_REQUEST['show'] )) )
+		else if( ($file = $this->fm->local( $_REQUEST['show'] )) )
 		{
-			NavigationFile::add( ($edit = $file) );
+			NavigationFile::add( $file );
+			$edit = $file;
 		}
-		else if( ($file = $this->fm->safePath( $_REQUEST['hide'] )) )
+		else if( ($file = $this->fm->local( $_REQUEST['hide'] )) )
 		{
-			NavigationFile::hide( ($edit = $file) );
+			NavigationFile::hide( $file );
+			$edit = $file;
 		}
 
 		if( $edit )
@@ -129,7 +144,7 @@ EOF;
 <a name="Edit"></a>
 <textarea name="text" rows="10"
 placeholder="{$this->tr( 'Enter text here' )}"
-class="Editor">{$this->fm->getFile( $this->edit )}</textarea>\n
+class="Editor">{$this->fm->read( $this->edit )}</textarea>\n
 EOF;
 		else
 			$editor = $actions;
@@ -150,8 +165,8 @@ EOF;
 	 */
 	protected function path( $dir )
 	{
-		$out = null;
 		$path = '?cwd=';
+		$contents = null;
 
 		foreach( explode( '/', trim( $dir, '/' ) ) as $name )
 		{
@@ -162,14 +177,14 @@ EOF;
 
 			$path .= $name;
 
-			$out .= <<<EOF
-<a href="$path">$label</a><span class="Screenreader">/</span>\n
+			$contents .= <<<EOF
+<a href="$path">$name</a><span class="Screenreader">/</span>\n
 EOF;
 
 			$path .= '/';
 		}
 
-		return $out;
+		return $contents;
 	}
 
 	/**
@@ -182,7 +197,7 @@ EOF;
 		$dir,
 		$selected = null )
 	{
-		$out = '<ul class="Directory">';
+		$contents = '<ul class="Directory">';
 		$nav = array();
 
 		if( ($fp = @fopen(
@@ -205,7 +220,7 @@ EOF;
 				}
 
 				$nav[] = $name;
-				$out .= $this->fileListItem(
+				$contents .= $this->fileListItem(
 					$dir,
 					$name,
 					$selected,
@@ -228,7 +243,7 @@ EOF;
 					in_array( $name, $nav ) )
 					continue;
 
-				$out .= $this->fileListItem(
+				$contents .= $this->fileListItem(
 					$dir,
 					$name,
 					$selected,
@@ -239,7 +254,7 @@ EOF;
 		}
 
 		if( !$selected )
-			$out .= <<<EOF
+			$contents .= <<<EOF
 <li class="SelectedFile"><a name="Name"></a>
 <input type="text" class="File" name="name"
 placeholder="{$this->tr( 'Enter name' )}"/>
@@ -251,9 +266,9 @@ value="{$this->tr( 'Save' )}"/></li>
 </ul></li>\n
 EOF;
 
-		$out .= '</ul>';
+		$contents .= '</ul>';
 
-		return $out;
+		return $contents;
 	}
 
 	/**
@@ -271,7 +286,7 @@ EOF;
 		$hidden = false )
 	{
 		$file = "{$dir}/{$name}";
-		$out = null;
+		$contents = null;
 		$classes = array();
 
 		if( $hidden )
@@ -283,7 +298,7 @@ EOF;
 			$classes = implode( ' ', $classes );
 			$time = time();
 
-			$out .= <<<EOF
+			$contents .= <<<EOF
 <li class="{$classes}"><a name="Rename"></a>
 <input type="text" class="File" name="name" value="{$name}"/>
 <ul class="Actions">
@@ -296,26 +311,26 @@ class="Action">{$this->tr( 'Down' )}</a></li>\n
 EOF;
 
 			if( $hidden )
-				$out .= <<<EOF
+				$contents .= <<<EOF
 <li><a href="?show={$file}#Rename"
 class="Action">{$this->tr( 'Show' )}</a></li>\n
 EOF;
 			else
-				$out .= <<<EOF
+				$contents .= <<<EOF
 <li><a href="?hide={$file}#Rename"
 class="Action">{$this->tr( 'Hide' )}</a></li>\n
 EOF;
 
 			if( is_file( $file ) )
-				$out .= <<<EOF
+				$contents .= <<<EOF
 <li><a href="#Edit" class="Action">{$this->tr( 'Edit' )}</a></li>\n
 EOF;
 			else if( is_dir( $file ) )
-				$out .= <<<EOF
+				$contents .= <<<EOF
 <li><a href="?cwd={$file}" class="Action">{$this->tr( 'Enter' )}</a></li>\n
 EOF;
 
-			$out .= <<<EOF
+			$contents .= <<<EOF
 <li><a href="?remove={$file}"
 onclick="return confirm( '{$this->tr( 'Are you sure?' )}' )"
 class="Action">{$this->tr( 'Delete' )}</a></li>
@@ -343,38 +358,14 @@ EOF;
 			if( ($classes = implode( ' ', $classes )) )
 				$classes = ' class="' . $classes . '"';
 
-			$out .= <<<EOF
+			$contents .= <<<EOF
 <li{$classes}><a class="File" href="?{$action}={$file}{$anchor}">{$name}</a>
 <a href="?edit={$file}#Rename"
 class="Manage">{$this->tr( 'Manage' )}</a></li>\n
 EOF;
 		}
 
-		return $out;
-	}
-
-	/**
-	 * Translate a label
-	 *
-	 * @param $en - english label to translate
-	 */
-	protected function tr( $en )
-	{
-		// overwrite this method to implement i18n
-		return $en;
-	}
-
-	/**
-	 * Return proper file name
-	 *
-	 * @param $file - file name
-	 */
-	protected function fileName( $file )
-	{
-		return str_replace(
-			' ',
-			'-',
-			$file );
+		return $contents;
 	}
 
 	/**
@@ -393,7 +384,7 @@ EOF;
 
 		$exists = file_exists( $file );
 
-		if( !$this->fm->putFile( $new, $text ) )
+		if( !$this->fm->write( $new, $text ) )
 			return false;
 
 		if( $exists )

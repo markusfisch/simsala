@@ -1,5 +1,11 @@
 <?php
 
+ini_set( 'session.use_cookies', 0 );
+ini_set( 'session.use_only_cookies', 0 );
+ini_set( 'session.use_trans_sid', 1 );
+
+session_start();
+
 set_include_path( 'lib:lib/SimsalaPhp:lib/Phapp:lib/php-markdown' );
 
 function __autoload( $cls )
@@ -7,7 +13,7 @@ function __autoload( $cls )
 	require_once $cls . '.php';
 }
 
-$app = new App();
+$app = new App( 'simsala' );
 
 ?>
 <!doctype html>

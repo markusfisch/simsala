@@ -7,12 +7,14 @@ Features
 --------
 
 * Generate a static web site from a tree of [Markdown][1] files.
-* Automatic generation of nested site navigation.
+* Automatic generation of a nested site navigation.
 * Editor and generator run PHP which means it can be deployed almost anywhere.
 * Works on everything with a web browser. Even Opera Mini.
 
 How to use
 ----------
+
+### Setup
 
 Simply clone this repository into your web root:
 
@@ -47,23 +49,36 @@ in simsala/layouts:
 	</body>
 	</html>
 
+Why contents.html?
 A layout file corresponds to a content file if it has the same name or the
 name of the directory in which the content file is in.
+So the most basic layout is contents.html since all content files are in
+the contents folder.
+
+### Set password
+
+Open simsala/index.php with a text editor and find this line:
+
+	$app = new App( 'simsala' );
+
+The word __simsala__ is your password.
+Change it to something more secure.
+
+### Log in
 
 Now, open your web site with /simsala in your web browser:
 
 	http://example.com/simsala
 
-You should see the editing interface.
+You should see a login form. Give your password and press __Login__.
+
+### Edit
+
 Start creating files and folders as you like.
 At any time, you may press __Publish__ to generate the HTML files in
 the directory that contains simsala.
 
-Here's a [sample repository][3] to get you going.
-
-It's probably a good idea to restrict access to the simsala directory.
-If you're using Apache, you might want to use [.htaccess authorization][2]
-for that.
+Here's a [sample repository][2] to get you going.
 
 Advanced use
 ------------
@@ -77,5 +92,4 @@ That way you can always update simsala to the latest version with:
 	$ git subtree pull --prefix simsala https://github.com/markusfisch/simsala.git master --squash
 
 [1]:https://en.wikipedia.org/wiki/Markdown
-[2]:http://google.com/search?hl=en&q=htaccess%20authentication
-[3]:https://github.com/markusfisch/simsala-sample
+[2]:https://github.com/markusfisch/simsala-sample

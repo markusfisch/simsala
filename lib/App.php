@@ -5,11 +5,21 @@
  */
 class App extends Phapp
 {
+	/** Passphrase */
+	public $password;
+
+	/** Simsala instance */
+	public $simsala;
+
 	/**
 	 * Initialize
+	 *
+	 * @param $password - password
 	 */
-	public function App()
+	public function App( $password )
 	{
+		$this->password = $password;
+
 		$this->simsala = new MarkdownSimsala();
 		$this->simsala->htdocsDir = '..';
 	}
@@ -27,6 +37,6 @@ class App extends Phapp
 	 */
 	public function contents()
 	{
-		return $this->process( 'EditorView' );
+		return $this->process( 'LoginView' );
 	}
 }
