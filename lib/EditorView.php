@@ -27,7 +27,7 @@ class EditorView extends BaseView
 
 		if( ($edit = $_REQUEST['edit']) )
 			$edit = $this->fm->local( $edit );
-		else if( ($cwd = $_REQUEST['cwd']) );
+		else if( ($cwd = $_REQUEST['cwd']) )
 			$cwd = $this->fm->local( $cwd );
 
 		if( ($name = $_REQUEST['name']) &&
