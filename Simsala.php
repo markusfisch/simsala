@@ -280,8 +280,17 @@ class Simsala
 
 		if( ($fp = @fopen( "{$dir}/.nav", 'r' )) )
 		{
-			if( ($name = fgets( $fp )) )
-				$query = $this->query( "{$dir}/{$name}" );
+			while( ($name = fgets( $fp )) )
+			{
+				$file = "{$dir}/" . strtok( $name, "\r\n" );
+
+				if( is_dir( $file ) )
+					continue;
+
+				$query = $this->query( $file );
+
+				break;
+			}
 
 			fclose( $fp );
 		}
