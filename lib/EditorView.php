@@ -43,8 +43,9 @@ class EditorView extends BaseView
 					$edit = $path;
 				}
 			}
-			else if( $_REQUEST['save'] ||
-				($publish = $_REQUEST['publish']) )
+			else if(
+				$_REQUEST['save'] ||
+				$_REQUEST['publish'] )
 			{
 				$newName =
 					($edit ? dirname( $edit ) : $cwd) .
@@ -62,12 +63,6 @@ class EditorView extends BaseView
 						$_REQUEST['text'] );
 
 				$edit = $newName;
-
-				if( $publish )
-				{
-					$this->app->simsala->clean();
-					$this->app->simsala->compose();
-				}
 			}
 		}
 		else if( ($file = $this->fm->local( $_REQUEST['remove'] )) )
@@ -99,6 +94,12 @@ class EditorView extends BaseView
 		{
 			NavigationFile::hide( $file );
 			$edit = $file;
+		}
+
+		if( $_REQUEST['publish'] )
+		{
+			$this->app->simsala->clean();
+			$this->app->simsala->compose();
 		}
 
 		if( $edit )
