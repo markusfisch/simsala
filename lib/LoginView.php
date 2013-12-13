@@ -10,9 +10,6 @@ class LoginView extends BaseView
 	 */
 	public function request()
 	{
-		if( !parent::request() )
-			return 'EditorView';
-
 		return null;
 	}
 

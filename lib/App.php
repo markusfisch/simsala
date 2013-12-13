@@ -37,6 +37,6 @@ class App extends Phapp
 	 */
 	public function contents()
 	{
-		return $this->process( 'LoginView' );
+		return $this->process( 'EditorView' );
 	}
 }
