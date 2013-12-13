@@ -15,10 +15,11 @@ class NavigationFile
 		if( !($navFile = NavigationFile::navigationFileFor( $file )) )
 			return false;
 
-		$nav = null;
+		// generate navigation file and make sure
+		// the file to add is not already there
+		NavigationFile::hide( $file );
 
-		if( file_exists( $navFile ) &&
-			($nav = file_get_contents( $navFile )) &&
+		if( ($nav = file_get_contents( $navFile )) &&
 			substr( $nav, -1 ) != "\n" )
 			$nav .= "\n";
 
@@ -58,10 +59,13 @@ class NavigationFile
 			!file_exists( $navFile ) )
 			return false;
 
+		$name = basename( $file );
+
 		return file_put_contents(
 			$navFile,
 			preg_replace(
-				'/\b' . basename( $file ) . '[\r\n]*\b/',
+				'/\b([\r\n]+' . $name . '|' .
+					$name . '[\r\n]+)\b/',
 				null,
 				file_get_contents( $navFile ) ) );
 	}
