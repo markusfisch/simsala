@@ -52,6 +52,7 @@ in simsala/layouts:
 Why contents.html?
 A layout file corresponds to a content file if it has the same name or the
 name of the directory in which the content file is in.
+
 So the most basic layout is contents.html since all content files are in
 the contents folder.
 
@@ -79,6 +80,19 @@ At any time, you may press __Publish__ to generate the HTML files in
 the directory that contains simsala.
 
 Here's a [sample repository][2] to get you going.
+
+Symbols & Methods
+-----------------
+
+Simsala provides the following symbols and methods to be used in your
+layout files:
+
+* $title - name of a content file (- and _ are replaced with blanks)
+* $content - rendered content of a content file
+* $this->nav( $dir ) - nested navigation tree, argument is optional and
+  defaults to content directory
+* $this->map( $dir ) - site map of given directory, argument is optional and
+  defaults to content directory
 
 Advanced use
 ------------
