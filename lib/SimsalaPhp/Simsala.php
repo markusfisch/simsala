@@ -15,16 +15,25 @@ class Simsala
 	public $htdocsDir = 'htdocs';
 
 	/** Content file in process */
-	private $file;
+	protected $file;
 
 	/** Extension of output file */
-	private $ext;
+	protected $ext;
+
+	/** Content file to become index.(html|*) */
+	protected $index;
+
+	/** Characters to skip to make path relative to webroot */
+	protected $skip;
 
 	/**
 	 * Compose web site
 	 */
 	public function compose()
 	{
+		$this->skip = strlen( $this->contentsDir )+1;
+		$this->index = $this->indexFile( $this->contentsDir );
+
 		$this->process( $this->contentsDir );
 	}
 
@@ -55,9 +64,40 @@ class Simsala
 	}
 
 	/**
+	 * Return name of the content file that should become index.html
+	 * if there isn't a content file that's called "Index"
+	 *
+	 * @param $dir - path
+	 */
+	protected function indexFile( $dir )
+	{
+		$explicit = false;
+
+		while( ($dh = opendir( $dir )) )
+		{
+			while( ($name = readdir( $dh )) )
+			{
+				if( !strcasecmp( $name, "index" ) )
+				{
+					$explicit = true;
+					break;
+				}
+			}
+
+			closedir( $dh );
+			break;
+		}
+
+		if( $explicit )
+			return null;
+
+		return $this->firstNavItem( $dir );
+	}
+
+	/**
 	 * Process input files recursively
 	 *
-	 * @param $dir - directory
+	 * @param $dir - path
 	 */
 	protected function process( $dir )
 	{
@@ -134,25 +174,15 @@ class Simsala
 	 */
 	protected function query( $file )
 	{
-		return strtolower( preg_replace(
+		$file = strtolower( preg_replace(
 			'.[-/].',
 			'-',
-			$this->relativeUrl( $file ) ) ) . $this->ext;
-	}
+			substr( $file, $this->skip ) ) );
 
-	/**
-	 * Return URL relative to content directory
-	 *
-	 * @param $file - file or directory
-	 */
-	protected function relativeUrl( $file )
-	{
-		$skip = strlen( $this->contentsDir );
+		if( $file == $this->index )
+			$file = 'index';
 
-		if( substr( $this->contentsDir, -1, 1 ) != '/' )
-			++$skip;
-
-		return substr( $file, $skip );
+		return $file . $this->ext;
 	}
 
 	/**
@@ -176,11 +206,22 @@ class Simsala
 	}
 
 	/**
+	 * Generate site map from directory tree
+	 *
+	 * @param $dir - path (optional)
+	 */
+	protected function map( $dir = null )
+	{
+		return $this->nav( $dir, true );
+	}
+
+	/**
 	 * Generate navigation tree from directory tree
 	 *
-	 * @param $dir - directory (optional)
+	 * @param $dir - path (optional)
+	 * @param $map - true to lay out complete tree (optional)
 	 */
-	protected function nav( $dir = null )
+	protected function nav( $dir = null, $map = false )
 	{
 		if( !$dir )
 			$dir = $this->contentsDir;
@@ -192,7 +233,8 @@ class Simsala
 			while( ($name = fgets( $fp )) )
 				$nav .= $this->navItem(
 					$dir,
-					strtok( $name, "\r\n" ) );
+					strtok( $name, "\r\n" ),
+					$map );
 
 			fclose( $fp );
 			$nav .= '</ul>';
@@ -208,7 +250,7 @@ class Simsala
 			if( $name{0} == '.' )
 				continue;
 
-			$nav .= $this->navItem( $dir, $name );
+			$nav .= $this->navItem( $dir, $name, $map );
 		}
 
 		closedir( $dh );
@@ -222,8 +264,9 @@ class Simsala
 	 *
 	 * @param $dir - directory
 	 * @param $name - file name
+	 * @param $map - true to lay out complete tree (optional)
 	 */
-	protected function navItem( $dir, $name )
+	protected function navItem( $dir, $name, $map = false )
 	{
 		if( !$name )
 			return null;
@@ -249,7 +292,8 @@ class Simsala
 			if( !($first = $this->firstNavItem( $file )) )
 				return null;
 
-			if( $inPath )
+			if( $map ||
+				$inPath )
 				return
 					$navItem .
 					'">' .

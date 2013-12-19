@@ -44,6 +44,19 @@ A layout file may look like this:
 	</body>
 	</html>
 
+Symbols & Methods
+-----------------
+
+Simsala provides the following symbols and methods to be used in your
+layout files:
+
+* $title - name of a content file (- and _ are replaced with blanks)
+* $content - rendered content of a content file
+* $this->nav( $dir ) - nested navigation tree, argument is optional and
+  defaults to content directory
+* $this->map( $dir ) - site map of given directory, argument is optional and
+  defaults to content directory
+
 Markdown
 --------
 
