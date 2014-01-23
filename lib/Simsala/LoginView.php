@@ -3,13 +3,14 @@
 /**
  * Login view
  */
-class LoginView extends BaseView
+class LoginView extends View
 {
 	/**
 	 * Process requests
 	 */
 	public function request()
 	{
+		// don't call View::request() here, this view is public
 		return null;
 	}
 

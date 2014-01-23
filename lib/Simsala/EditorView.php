@@ -3,7 +3,7 @@
 /**
  * Editor view
  */
-class EditorView extends BaseView
+class EditorView extends View
 {
 	/** File manager */
 	protected $fm;

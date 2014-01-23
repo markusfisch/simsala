@@ -3,7 +3,7 @@
 /**
  * Abstract base view
  */
-class BaseView extends PhappView
+class View extends PhappView
 {
 	/**
 	 * Process requests

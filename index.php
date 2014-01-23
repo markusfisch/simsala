@@ -6,7 +6,7 @@ ini_set( 'session.use_trans_sid', 1 );
 
 session_start();
 
-set_include_path( 'lib:lib/SimsalaPhp:lib/Phapp:lib/php-markdown' );
+set_include_path( 'lib/Phapp:lib/SimsalaPhp:lib/Simsala:lib/php-markdown' );
 
 function __autoload( $cls )
 {
