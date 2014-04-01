@@ -8,8 +8,7 @@ Features
 
 * Generate a static web site from a tree of [Markdown][1] files.
 * Automatic generation of a nested site navigation.
-* Editor and generator run PHP which means it can be deployed almost anywhere.
-* Works on everything with a web browser. Even Opera Mini.
+* Editor works on everything with a web browser. Even Opera Mini.
 
 How to use
 ----------
@@ -78,8 +77,6 @@ You should see a login form. Give your password and press __Login__.
 Start creating files and folders as you like.
 At any time, you may press __Publish__ to generate the HTML files in
 the directory that contains simsala.
-
-Here's a [sample repository][2] to get you going.
 
 Symbols & Methods
 -----------------
