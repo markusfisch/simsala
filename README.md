@@ -57,12 +57,18 @@ the contents folder.
 
 ### Set password
 
-Open simsala/index.php with a text editor and find this line:
+Calculate the MD5 sum of the password you like to use to access the web
+interface. On Linux/BSD/OSX you can use md5sum:
 
-	$app = new App( 'simsala' );
+	$ printf 'your-password' | md5sum
 
-The word __simsala__ is your password.
-Change it to something more secure.
+Next, open simsala/index.php with a text editor and find this line:
+
+	$app = new App(
+		// MD5 sum of your password
+		'0cd9686c955f3fdfead2081e7cb9eb27' );
+
+Put the MD5 hash between the single quotes.
 
 ### Log in
 

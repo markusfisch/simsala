@@ -13,7 +13,9 @@ function __autoload( $cls )
 	require_once $cls . '.php';
 }
 
-$app = new App( 'simsala' );
+$app = new App(
+	// MD5 sum of your password
+	'c166638736413e6136fdf3b5aea1c419' );
 
 ?>
 <!doctype html>

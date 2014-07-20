@@ -10,7 +10,7 @@ class View extends PhappView
 	 */
 	public function request()
 	{
-		if( $_REQUEST['password'] == $this->app->password )
+		if( md5( $_REQUEST['password'] ) == $this->app->password )
 			$_SESSION['logged_in'] = true;
 
 		if( $_SESSION['logged_in'] )
